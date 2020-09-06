@@ -2,8 +2,7 @@
 
 **the application is card overlay swuiping  like tinder / credit cards**
 
-![alt](/ui-image/swiping.gif)
-
+<img src="ui-image/swiping.gif" width="250"/>
 
 ### Prerequisites
 
