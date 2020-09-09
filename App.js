@@ -20,8 +20,8 @@ export default class App extends Component {
   images = [
     require('./assets/background12.jpg'),
     require('./assets/background13.jpg'),
-    require('./assets/background14.jpg')
-  ]
+    require('./assets/background14.jpg'),
+  ];
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
@@ -29,41 +29,39 @@ export default class App extends Component {
       onStartShouldSetPanResponder: () => true,
       onStartShouldSetPanResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderStart: () => {},
       onPanResponderMove: (evt, gestureState) => {
-
         Animated.event([null, {dx: this.state.pan.x, dy: this.state.pan.y}])(
           evt,
           gestureState,
         );
-
-
       },
       onPanResponderRelease: (evt, gestureState) => {
-        
-        Animated.timing( this.state.pan, {
-          toValue: 0,
+        Animated.timing(this.state.pan, {
+          toValue: {x: gestureState.dx * 3, y: gestureState.dy * 3},
           duration: 300,
-        } ).start();
+        }).start();
         // will be used to interpolate values in each view
-        Animated.timing( this.state.cardsStackedAnim, {
+        Animated.timing(this.state.cardsStackedAnim, {
           toValue: 1,
           duration: 300,
-        }).start( () => {
+        }).start(() => {
           // reset cardsStackedAnim's value to 0 when animation ends
-          this.state.cardsStackedAnim.setValue( 0 );
+          this.state.cardsStackedAnim.setValue(0);
           // increment card position when animation ends
           this.setState({
             currentIndex: this.state.currentIndex + 1,
           });
-        } );
+          this.state.pan.setValue({x: 0, y: 0});
+        });
       },
     });
   }
-  styleInterpolate(outputRange){
+  styleInterpolate(outputRange) {
     return this.state.cardsStackedAnim.interpolate({
       inputRange: [0, 1],
       outputRange,
-    })
+    });
   }
   render() {
     return (
@@ -75,34 +73,50 @@ export default class App extends Component {
               style={[
                 styles.fixedPos,
                 {
-                  opacity: this.styleInterpolate([ 0.3, 0.6 ]),
+                  opacity: this.styleInterpolate([0.3, 0.6]),
                   bottom: this.styleInterpolate([-32, -16]),
                   scaleX: this.styleInterpolate([0.85, 0.95]),
                   zIndex: 1,
                 },
               ]}>
-              <Card imageFile={this.images[(this.state.currentIndex + 2) % 3]} />
+              <Card
+                imageFile={this.images[(this.state.currentIndex + 2) % 3]}
+              />
             </Animated.View>
             <Animated.View
               style={[
                 styles.fixedPos,
                 {
-                  opacity: this.styleInterpolate([ 0.6, 1 ]),
-                  bottom: this.styleInterpolate([-16,0]),
+                  opacity: this.styleInterpolate([0.6, 1]),
+                  bottom: this.styleInterpolate([-16, 0]),
                   scaleX: this.styleInterpolate([0.95, 1]),
                   zIndex: 2,
                 },
               ]}>
-              <Card imageFile={this.images[(this.state.currentIndex + 1) % 3]} />
+              <Card
+                imageFile={this.images[(this.state.currentIndex + 1) % 3]}
+              />
             </Animated.View>
             <Animated.View
               style={[
                 styles.fixedPos,
                 {
-                  opacity: this.state.cardsStackedAnim.interpolate({inputRange: [ 0, 1 ], outputRange: [ 1, 0.3 ] }),
-                  scale: this.state.cardsStackedAnim.interpolate({inputRange: [ 0, 1 ], outputRange: [ 1, 0.85 ] }),
-                  bottom: this.state.cardsStackedAnim.interpolate({inputRange: [ 0, 1 ], outputRange: [ 0, -32 ] }),
-                  zIndex: this.state.cardsStackedAnim.interpolate({inputRange: [ 0, 0.5, 1 ], outputRange: [ 3, 2, 0 ] }),
+                  opacity: this.state.cardsStackedAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.3],
+                  }),
+                  scale: this.state.cardsStackedAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.85],
+                  }),
+                  bottom: this.state.cardsStackedAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, -32],
+                  }),
+                  zIndex: this.state.cardsStackedAnim.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: [3, 2, 0],
+                  }),
                   transform: [
                     {translateX: this.state.pan.x},
                     {translateY: this.state.pan.y},
@@ -110,7 +124,7 @@ export default class App extends Component {
                 },
               ]}
               {...this._panResponder.panHandlers}>
-              <Card imageFile={this.images[(this.state.currentIndex) % 3]} />
+              <Card imageFile={this.images[this.state.currentIndex % 3]} />
             </Animated.View>
           </View>
         </View>
