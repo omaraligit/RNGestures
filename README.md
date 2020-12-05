@@ -1,6 +1,6 @@
 # dailyUi005 (cards overlay swiping)
 
-**the application is card overlay swuiping  like tinder / credit cards**
+**Whether you’re building a React Native Tinder Clone or an original dating app, you’ll eventually end up implementing the UI for React Native Swipe Cards.I built a Tinder cards component in React Native, for a Tinder Clone app. If you’re looking to learn how to build the same in React Native, this repo is the perfect place to get started from.**
 
 <img src="ui-image/swiping.gif" width="250"/>
 
